@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  format:
+    name: Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify clang-format is available
+        run: clang-format --version
+      - name: Check formatting
+        run: clang-format --dry-run --Werror --style=file $(git ls-files '*.cpp' '*.hpp' '*.h')
+
+  build-and-test:
+    name: ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: GCC Debug / Ubuntu
+            os: ubuntu-latest
+            configure_preset: gcc-debug
+            build_preset: build-gcc-debug
+            test_preset: test-gcc-debug
+          - name: GCC Release / Ubuntu
+            os: ubuntu-latest
+            configure_preset: gcc-release
+            build_preset: build-gcc-release
+            test_preset: test-gcc-release
+          - name: Clang Debug / Ubuntu
+            os: ubuntu-latest
+            configure_preset: clang-debug
+            build_preset: build-clang-debug
+            test_preset: test-clang-debug
+          - name: Clang Release / Ubuntu
+            os: ubuntu-latest
+            configure_preset: clang-release
+            build_preset: build-clang-release
+            test_preset: test-clang-release
+          - name: Apple Clang Debug / macOS
+            os: macos-latest
+            configure_preset: clang-debug
+            build_preset: build-clang-debug
+            test_preset: test-clang-debug
+          - name: Apple Clang Release / macOS
+            os: macos-latest
+            configure_preset: clang-release
+            build_preset: build-clang-release
+            test_preset: test-clang-release
+          - name: MSVC Debug / Windows
+            os: windows-latest
+            configure_preset: msvc-debug
+            build_preset: build-msvc-debug
+            test_preset: test-msvc-debug
+          - name: MSVC Release / Windows
+            os: windows-latest
+            configure_preset: msvc-release
+            build_preset: build-msvc-release
+            test_preset: test-msvc-release
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake --preset ${{ matrix.configure_preset }}
+      - name: Build
+        run: cmake --build --preset ${{ matrix.build_preset }} --parallel
+      - name: Test
+        run: ctest --preset ${{ matrix.test_preset }}

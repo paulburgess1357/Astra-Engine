@@ -1,0 +1,10 @@
+---
+Checks: >
+  -* ,
+  bugprone-*,
+  performance-*,
+  readability-*
+WarningsAsErrors: '*'
+HeaderFilterRegex: '^(src|tests)/'
+FormatStyle: file
+...
