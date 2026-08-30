@@ -13,7 +13,10 @@ function(astra_enable_sanitizers target)
         endif()
 
         if(ASTRA_ENABLE_ADDRESS_SANITIZER)
-            target_compile_options(${target} PRIVATE /fsanitize=address)
+            # MSVC Debug defaults enable /RTC1 and incremental linking; both are
+            # incompatible with AddressSanitizer.
+            target_compile_options(${target} PRIVATE /fsanitize=address /RTC-)
+            target_link_options(${target} PRIVATE /INCREMENTAL:NO)
         endif()
     elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
         set(astra_sanitizers)
