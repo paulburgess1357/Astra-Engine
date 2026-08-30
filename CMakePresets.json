@@ -238,6 +238,13 @@
       }
     },
     {
+      "name": "test-clang-tidy",
+      "configurePreset": "clang-tidy",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
       "name": "test-gcc-asan-ubsan",
       "configurePreset": "gcc-asan-ubsan",
       "output": {

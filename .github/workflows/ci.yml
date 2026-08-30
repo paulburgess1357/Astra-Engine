@@ -44,6 +44,11 @@ jobs:
             configure_preset: clang-release
             build_preset: build-clang-release
             test_preset: test-clang-release
+          - name: Clang-Tidy / Ubuntu
+            os: ubuntu-latest
+            configure_preset: clang-tidy
+            build_preset: build-clang-tidy
+            test_preset: test-clang-tidy
           - name: GCC ASan + UBSan / Ubuntu
             os: ubuntu-latest
             configure_preset: gcc-asan-ubsan
@@ -64,6 +69,11 @@ jobs:
             configure_preset: clang-release
             build_preset: build-clang-release
             test_preset: test-clang-release
+          - name: Apple Clang ASan + UBSan / macOS
+            os: macos-latest
+            configure_preset: clang-asan-ubsan
+            build_preset: build-clang-asan-ubsan
+            test_preset: test-clang-asan-ubsan
           - name: MSVC Debug / Windows
             os: windows-latest
             configure_preset: msvc-debug

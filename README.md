@@ -1,6 +1,6 @@
 # Astra Engine
 
-A cross-platform Vulkan renderer, beginning with a strict C++/CMake foundation.
+A cross-platform Vulkan Renderer
 
 ## Build locally (GCC)
 
@@ -28,9 +28,9 @@ cmake --build --preset format-check
 ```
 
 The `clang-*`, `clang-tidy`, and `msvc-*` presets provide equivalent Clang,
-optional static-analysis, and Visual Studio builds. The CI pipeline builds and
-tests Debug and Release with GCC/Clang on Linux, Apple Clang on macOS, and MSVC
-on Windows.
+static-analysis, and Visual Studio builds. The CI pipeline checks formatting,
+runs clang-tidy, and builds/tests Debug and Release with GCC/Clang on Linux,
+Apple Clang on macOS, and MSVC on Windows.
 
 ## Runtime sanitizers
 
