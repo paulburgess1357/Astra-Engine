@@ -6,6 +6,8 @@ A cross-platform Vulkan Renderer
 
 Prerequisites: CMake 3.25+, Make, GCC with C++23 support, and `clang-format`.
 
+The Visual Studio 2026 presets require CMake 4.2+ on Windows.
+
 ```sh
 cmake --preset default
 cmake --build --preset build-default
