@@ -1,6 +1,8 @@
 #include <spdlog/spdlog.h>
 
+#include "application.hpp"
+
 auto main() -> int {
-  spdlog::info("Hello from Astra.");
+  spdlog::info(astra::kGreeting);
   return 0;
 }

@@ -45,8 +45,7 @@ astra_enable_warnings(astra_engine)
 
 if(BUILD_TESTING)
     add_executable(astra_tests tests/smoke_test.cpp)
-    target_compile_definitions(astra_tests PRIVATE
-        ASTRA_ENGINE_PATH="$<TARGET_FILE:astra_engine>")
+    target_include_directories(astra_tests PRIVATE src)
     target_link_libraries(astra_tests PRIVATE GTest::gtest_main)
     astra_enable_sanitizers(astra_tests)
     astra_enable_warnings(astra_tests)
