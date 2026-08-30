@@ -43,7 +43,9 @@ astra_enable_warnings(astra_engine)
 
 if(BUILD_TESTING)
     add_test(NAME astra_smoke COMMAND astra_engine)
-    set_tests_properties(astra_smoke PROPERTIES PASS_REGULAR_EXPRESSION "Hello from Astra")
+    set_tests_properties(astra_smoke PROPERTIES
+        PASS_REGULAR_EXPRESSION "Hello from Astra"
+        TIMEOUT 60)
 endif()
 
 find_program(ASTRA_CLANG_FORMAT_EXECUTABLE NAMES clang-format)

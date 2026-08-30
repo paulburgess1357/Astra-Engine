@@ -42,7 +42,9 @@ cmake --build --preset build-clang-debug
 ctest --preset test-clang-debug
 ```
 
-On Windows, use the MSVC preset:
+On Windows, use the MSVC preset. CMake picks the newest Visual Studio
+installed; building with Visual Studio 2026 requires CMake 4.2+ (older CMake
+does not know that generator).
 
 ```powershell
 cmake --preset msvc-debug

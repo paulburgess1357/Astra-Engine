@@ -2,11 +2,6 @@ option(ASTRA_ENABLE_ADDRESS_SANITIZER "Enable AddressSanitizer" OFF)
 option(ASTRA_ENABLE_UNDEFINED_BEHAVIOR_SANITIZER "Enable UndefinedBehaviorSanitizer" OFF)
 option(ASTRA_ENABLE_THREAD_SANITIZER "Enable ThreadSanitizer" OFF)
 
-if(MSVC AND ASTRA_ENABLE_ADDRESS_SANITIZER)
-    # /RTC1 is part of CMake's default Debug flags but is incompatible with /fsanitize=address.
-    string(REGEX REPLACE "/RTC[1csu]+" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-endif()
-
 function(astra_enable_sanitizers target)
     if(ASTRA_ENABLE_ADDRESS_SANITIZER AND ASTRA_ENABLE_THREAD_SANITIZER)
         message(FATAL_ERROR "AddressSanitizer and ThreadSanitizer cannot be enabled together.")
@@ -18,9 +13,21 @@ function(astra_enable_sanitizers target)
         endif()
 
         if(ASTRA_ENABLE_ADDRESS_SANITIZER)
-            target_compile_options(${target} PRIVATE /fsanitize=address)
-            # Incremental linking is not supported with ASan instrumentation.
+            # MSVC Debug defaults enable /RTC1 and incremental linking; both are
+            # incompatible with AddressSanitizer.
+            target_compile_options(${target} PRIVATE /fsanitize=address /RTC-)
             target_link_options(${target} PRIVATE /INCREMENTAL:NO)
+
+            # The MSVC ASan runtime is DLL-only and lives next to cl.exe, which
+            # is not on PATH outside a Developer Command Prompt. Copy the DLL
+            # next to the executable; without it the loader's missing-DLL error
+            # dialog blocks forever on headless CI runners.
+            cmake_path(GET CMAKE_CXX_COMPILER PARENT_PATH astra_msvc_tools_dir)
+            add_custom_command(TARGET ${target} POST_BUILD
+                COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+                    "${astra_msvc_tools_dir}/clang_rt.asan_dynamic-x86_64.dll"
+                    "$<TARGET_FILE_DIR:${target}>"
+                VERBATIM)
         endif()
     elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
         set(astra_sanitizers)
