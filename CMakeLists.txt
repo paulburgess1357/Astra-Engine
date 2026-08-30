@@ -9,6 +9,13 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+if(CMAKE_EXPORT_COMPILE_COMMANDS AND UNIX)
+    set(ASTRA_COMPILE_COMMANDS_LINK "${CMAKE_SOURCE_DIR}/build/compile_commands.json")
+    file(REMOVE "${ASTRA_COMPILE_COMMANDS_LINK}")
+    file(CREATE_LINK "${CMAKE_BINARY_DIR}/compile_commands.json"
+        "${ASTRA_COMPILE_COMMANDS_LINK}" SYMBOLIC)
+endif()
+
 include(CTest)
 include(cmake/Sanitizers.cmake)
 include(cmake/Warnings.cmake)
@@ -19,8 +26,18 @@ if(ASTRA_ENABLE_CLANG_TIDY)
         "${ASTRA_CLANG_TIDY_EXECUTABLE};--config-file=${CMAKE_SOURCE_DIR}/.clang-tidy")
 endif()
 
+find_package(Vulkan REQUIRED)
+find_package(VulkanMemoryAllocator CONFIG REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
+
 add_executable(astra_engine src/main.cpp)
 target_compile_features(astra_engine PRIVATE cxx_std_23)
+target_link_libraries(astra_engine PRIVATE
+    Vulkan::Vulkan
+    GPUOpen::VulkanMemoryAllocator
+    glfw
+    spdlog::spdlog)
 astra_enable_sanitizers(astra_engine)
 astra_enable_warnings(astra_engine)
 

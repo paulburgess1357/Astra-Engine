@@ -2,14 +2,52 @@
 
 A cross-platform Vulkan Renderer
 
-## Build locally (GCC)
+## Bootstrap dependencies
 
-Prerequisites: CMake 3.25+, Make, GCC with C++23 support, and `clang-format`.
+Prerequisites are Git, CMake 3.25+, a compiler with C++23 support, and the
+platform build tools: Ninja on Linux/macOS (`apt install ninja-build` or
+`brew install ninja`) or Visual Studio 2022 on Windows. On Linux and macOS,
+bootstrap the pinned vcpkg checkout with:
+
+```sh
+./scripts/bootstrap.sh
+```
+
+On Windows, run:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\bootstrap.ps1
+```
+
+The scripts keep vcpkg, downloaded sources, and its binary cache under the
+Git-ignored `.deps/` directory. They do not install anything globally or modify
+the shell environment. Running a configure preset then installs the manifest
+dependencies for that platform automatically.
+
+## Build locally
+
+The default preset is a GCC Debug build for Linux:
 
 ```sh
 cmake --preset default
 cmake --build --preset build-default
 ctest --preset test-default
+```
+
+On macOS, use the Apple Clang preset:
+
+```sh
+cmake --preset clang-debug
+cmake --build --preset build-clang-debug
+ctest --preset test-clang-debug
+```
+
+On Windows, use the MSVC preset:
+
+```powershell
+cmake --preset msvc-debug
+cmake --build --preset build-msvc-debug
+ctest --preset test-msvc-debug
 ```
 
 `default` means GCC Debug: fast compilation, debug information, and assertions
@@ -66,9 +104,15 @@ AddressSanitizer only; use `msvc-asan`, `build-msvc-asan`, and `test-msvc-asan`.
 - Namespaces: `lowercase`
 
 Formatting is required and defined by `.clang-format`. `.clangd` configures
-editor diagnostics; `.clang-tidy` is an opt-in static-analysis preset.
+editor diagnostics; `.clang-tidy` is an opt-in static-analysis preset. clangd
+reads `build/compile_commands.json`, a symlink that always points at the most
+recently configured preset's compilation database.
 
 ## Dependencies
 
-This repository uses vcpkg manifest mode. There are no dependencies yet; Vulkan
-and windowing libraries will be added to `vcpkg.json` when the renderer begins.
+This repository uses vcpkg manifest mode with a pinned registry baseline:
+
+- GLFW for windows, input, and Vulkan surface creation
+- spdlog for logging
+- Vulkan loader and headers, including Vulkan-Hpp and its `vk::raii` API
+- Vulkan Memory Allocator (VMA) for GPU memory management
