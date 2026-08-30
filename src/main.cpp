@@ -1,6 +1,6 @@
-#include <iostream>
+#include <spdlog/spdlog.h>
 
 auto main() -> int {
-  std::cout << "Hello from Astra.\n";
+  spdlog::info("Hello from Astra.");
   return 0;
 }

@@ -7,9 +7,23 @@
   },
   "configurePresets": [
     {
+      "name": "vcpkg-base",
+      "hidden": true,
+      "environment": {
+        "VCPKG_ROOT": "${sourceDir}/.deps/vcpkg",
+        "VCPKG_DOWNLOADS": "${sourceDir}/.deps/downloads",
+        "VCPKG_DEFAULT_BINARY_CACHE": "${sourceDir}/.deps/binary-cache",
+        "VCPKG_DISABLE_METRICS": "1"
+      },
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/.deps/vcpkg/scripts/buildsystems/vcpkg.cmake"
+      }
+    },
+    {
       "name": "unix-base",
       "hidden": true,
-      "generator": "Unix Makefiles",
+      "inherits": "vcpkg-base",
+      "generator": "Ninja",
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "ASTRA_WARNINGS_AS_ERRORS": "ON"
@@ -110,7 +124,7 @@
     {
       "name": "msvc-debug",
       "displayName": "MSVC Debug",
-      "generator": "Visual Studio 18 2026",
+      "inherits": "vcpkg-base",
       "architecture": "x64",
       "binaryDir": "${sourceDir}/build/msvc-debug",
       "cacheVariables": {
@@ -120,7 +134,7 @@
     {
       "name": "msvc-release",
       "displayName": "MSVC Release",
-      "generator": "Visual Studio 18 2026",
+      "inherits": "vcpkg-base",
       "architecture": "x64",
       "binaryDir": "${sourceDir}/build/msvc-release",
       "cacheVariables": {

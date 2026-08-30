@@ -51,6 +51,11 @@ function(astra_enable_sanitizers target)
                 -fno-omit-frame-pointer)
             target_link_options(${target} PRIVATE "-fsanitize=${astra_sanitizer_flags}")
         endif()
+
+        if(ASTRA_ENABLE_UNDEFINED_BEHAVIOR_SANITIZER)
+            # UBSan reports and continues by default; abort instead so CTest runs fail.
+            target_compile_options(${target} PRIVATE -fno-sanitize-recover=undefined)
+        endif()
     elseif(ASTRA_ENABLE_ADDRESS_SANITIZER OR ASTRA_ENABLE_UNDEFINED_BEHAVIOR_SANITIZER
            OR ASTRA_ENABLE_THREAD_SANITIZER)
         message(FATAL_ERROR "Sanitizers are not configured for ${CMAKE_CXX_COMPILER_ID}.")
