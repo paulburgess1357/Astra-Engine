@@ -6,7 +6,7 @@ A cross-platform Vulkan Renderer
 
 Prerequisites are Git, CMake 3.25+, a compiler with C++23 support, and the
 platform build tools: Ninja on Linux/macOS (`apt install ninja-build` or
-`brew install ninja`) or Visual Studio 2022 on Windows. On Linux and macOS,
+`brew install ninja`) or Visual Studio 2022 or newer on Windows. On Linux and macOS,
 bootstrap the pinned vcpkg checkout with:
 
 ```sh

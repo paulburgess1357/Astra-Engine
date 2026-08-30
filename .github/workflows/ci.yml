@@ -17,7 +17,7 @@ jobs:
     name: Formatting
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Verify clang-format is available
         run: clang-format-18 --version
       - name: Check formatting
@@ -96,7 +96,7 @@ jobs:
             test_preset: test-msvc-asan
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install system dependencies for GLFW and the Vulkan loader
         if: runner.os == 'Linux'
         run: |
@@ -113,7 +113,7 @@ jobs:
           vcpkgDirectory: '${{ github.workspace }}/.deps/vcpkg'
           vcpkgGitCommitId: d015e31e90838a4c9dfa3eed45979bc70d9357fc
       - name: Restore vcpkg binary cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             .deps/binary-cache
