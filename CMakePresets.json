@@ -70,6 +70,44 @@
       }
     },
     {
+      "name": "gcc-asan-ubsan",
+      "displayName": "GCC Debug with ASan and UBSan",
+      "inherits": "gcc-debug",
+      "binaryDir": "${sourceDir}/build/gcc-asan-ubsan",
+      "cacheVariables": {
+        "ASTRA_ENABLE_ADDRESS_SANITIZER": "ON",
+        "ASTRA_ENABLE_UNDEFINED_BEHAVIOR_SANITIZER": "ON"
+      }
+    },
+    {
+      "name": "gcc-tsan",
+      "displayName": "GCC Debug with TSan",
+      "inherits": "gcc-debug",
+      "binaryDir": "${sourceDir}/build/gcc-tsan",
+      "cacheVariables": {
+        "ASTRA_ENABLE_THREAD_SANITIZER": "ON"
+      }
+    },
+    {
+      "name": "clang-asan-ubsan",
+      "displayName": "Clang Debug with ASan and UBSan",
+      "inherits": "clang-debug",
+      "binaryDir": "${sourceDir}/build/clang-asan-ubsan",
+      "cacheVariables": {
+        "ASTRA_ENABLE_ADDRESS_SANITIZER": "ON",
+        "ASTRA_ENABLE_UNDEFINED_BEHAVIOR_SANITIZER": "ON"
+      }
+    },
+    {
+      "name": "clang-tsan",
+      "displayName": "Clang Debug with TSan",
+      "inherits": "clang-debug",
+      "binaryDir": "${sourceDir}/build/clang-tsan",
+      "cacheVariables": {
+        "ASTRA_ENABLE_THREAD_SANITIZER": "ON"
+      }
+    },
+    {
       "name": "msvc-debug",
       "displayName": "MSVC Debug",
       "generator": "Visual Studio 17 2022",
@@ -87,6 +125,15 @@
       "binaryDir": "${sourceDir}/build/msvc-release",
       "cacheVariables": {
         "ASTRA_WARNINGS_AS_ERRORS": "ON"
+      }
+    },
+    {
+      "name": "msvc-asan",
+      "displayName": "MSVC Debug with ASan",
+      "inherits": "msvc-debug",
+      "binaryDir": "${sourceDir}/build/msvc-asan",
+      "cacheVariables": {
+        "ASTRA_ENABLE_ADDRESS_SANITIZER": "ON"
       }
     }
   ],
@@ -116,6 +163,22 @@
       "configurePreset": "clang-tidy"
     },
     {
+      "name": "build-gcc-asan-ubsan",
+      "configurePreset": "gcc-asan-ubsan"
+    },
+    {
+      "name": "build-gcc-tsan",
+      "configurePreset": "gcc-tsan"
+    },
+    {
+      "name": "build-clang-asan-ubsan",
+      "configurePreset": "clang-asan-ubsan"
+    },
+    {
+      "name": "build-clang-tsan",
+      "configurePreset": "clang-tsan"
+    },
+    {
       "name": "build-msvc-debug",
       "configurePreset": "msvc-debug",
       "configuration": "Debug"
@@ -124,6 +187,11 @@
       "name": "build-msvc-release",
       "configurePreset": "msvc-release",
       "configuration": "Release"
+    },
+    {
+      "name": "build-msvc-asan",
+      "configurePreset": "msvc-asan",
+      "configuration": "Debug"
     },
     {
       "name": "format-check",
@@ -170,6 +238,34 @@
       }
     },
     {
+      "name": "test-gcc-asan-ubsan",
+      "configurePreset": "gcc-asan-ubsan",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "test-gcc-tsan",
+      "configurePreset": "gcc-tsan",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "test-clang-asan-ubsan",
+      "configurePreset": "clang-asan-ubsan",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "test-clang-tsan",
+      "configurePreset": "clang-tsan",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
       "name": "test-msvc-debug",
       "configurePreset": "msvc-debug",
       "configuration": "Debug",
@@ -181,6 +277,14 @@
       "name": "test-msvc-release",
       "configurePreset": "msvc-release",
       "configuration": "Release",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "test-msvc-asan",
+      "configurePreset": "msvc-asan",
+      "configuration": "Debug",
       "output": {
         "outputOnFailure": true
       }

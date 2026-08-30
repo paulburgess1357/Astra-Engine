@@ -32,6 +32,31 @@ optional static-analysis, and Visual Studio builds. The CI pipeline builds and
 tests Debug and Release with GCC/Clang on Linux, Apple Clang on macOS, and MSVC
 on Windows.
 
+## Runtime sanitizers
+
+Sanitizer builds instrument the executable and report bugs while tests run. Use
+AddressSanitizer and UndefinedBehaviorSanitizer together for memory and
+undefined-behavior errors:
+
+```sh
+cmake --preset gcc-asan-ubsan
+cmake --build --preset build-gcc-asan-ubsan
+ctest --preset test-gcc-asan-ubsan
+```
+
+Use the corresponding `clang-asan-ubsan` preset with Clang or Apple Clang.
+ThreadSanitizer is a separate build because it cannot be combined with
+AddressSanitizer:
+
+```sh
+cmake --preset gcc-tsan
+cmake --build --preset build-gcc-tsan
+ctest --preset test-gcc-tsan
+```
+
+GCC, Clang, and Apple Clang support all three sanitizers. MSVC supports
+AddressSanitizer only; use `msvc-asan`, `build-msvc-asan`, and `test-msvc-asan`.
+
 ## Style
 
 - Types, classes, and enums: `PascalCase`

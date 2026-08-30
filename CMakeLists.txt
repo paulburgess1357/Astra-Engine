@@ -10,6 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(CTest)
+include(cmake/Sanitizers.cmake)
 include(cmake/Warnings.cmake)
 
 if(ASTRA_ENABLE_CLANG_TIDY)
@@ -20,6 +21,7 @@ endif()
 
 add_executable(astra_engine src/main.cpp)
 target_compile_features(astra_engine PRIVATE cxx_std_23)
+astra_enable_sanitizers(astra_engine)
 astra_enable_warnings(astra_engine)
 
 if(BUILD_TESTING)

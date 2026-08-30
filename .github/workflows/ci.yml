@@ -44,6 +44,16 @@ jobs:
             configure_preset: clang-release
             build_preset: build-clang-release
             test_preset: test-clang-release
+          - name: GCC ASan + UBSan / Ubuntu
+            os: ubuntu-latest
+            configure_preset: gcc-asan-ubsan
+            build_preset: build-gcc-asan-ubsan
+            test_preset: test-gcc-asan-ubsan
+          - name: Clang TSan / Ubuntu
+            os: ubuntu-latest
+            configure_preset: clang-tsan
+            build_preset: build-clang-tsan
+            test_preset: test-clang-tsan
           - name: Apple Clang Debug / macOS
             os: macos-latest
             configure_preset: clang-debug
@@ -64,6 +74,11 @@ jobs:
             configure_preset: msvc-release
             build_preset: build-msvc-release
             test_preset: test-msvc-release
+          - name: MSVC ASan / Windows
+            os: windows-latest
+            configure_preset: msvc-asan
+            build_preset: build-msvc-asan
+            test_preset: test-msvc-asan
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4

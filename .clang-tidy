@@ -1,10 +1,15 @@
 ---
 Checks: >
   -* ,
+  clang-analyzer-*,
   bugprone-*,
+  concurrency-*,
+  cppcoreguidelines-*,
+  misc-*,
+  modernize-*,
   performance-*,
+  portability-*,
   readability-*
-WarningsAsErrors: '*'
-HeaderFilterRegex: '^(src|tests)/'
+WarningsAsErrors: "*"
+HeaderFilterRegex: "^(src|tests)/"
 FormatStyle: file
-...
