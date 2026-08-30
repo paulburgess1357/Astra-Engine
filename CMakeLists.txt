@@ -17,6 +17,7 @@ if(CMAKE_EXPORT_COMPILE_COMMANDS AND UNIX)
 endif()
 
 include(CTest)
+include(GoogleTest)
 include(cmake/Sanitizers.cmake)
 include(cmake/Warnings.cmake)
 
@@ -29,6 +30,7 @@ endif()
 find_package(Vulkan REQUIRED)
 find_package(VulkanMemoryAllocator CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
+find_package(GTest CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 
 add_executable(astra_engine src/main.cpp)
@@ -42,10 +44,12 @@ astra_enable_sanitizers(astra_engine)
 astra_enable_warnings(astra_engine)
 
 if(BUILD_TESTING)
-    add_test(NAME astra_smoke COMMAND astra_engine)
-    set_tests_properties(astra_smoke PROPERTIES
-        PASS_REGULAR_EXPRESSION "Hello from Astra"
-        TIMEOUT 60)
+    add_executable(astra_tests tests/smoke_test.cpp)
+    target_include_directories(astra_tests PRIVATE src)
+    target_link_libraries(astra_tests PRIVATE GTest::gtest_main)
+    astra_enable_sanitizers(astra_tests)
+    astra_enable_warnings(astra_tests)
+    gtest_discover_tests(astra_tests)
 endif()
 
 find_program(ASTRA_CLANG_FORMAT_EXECUTABLE NAMES clang-format)
