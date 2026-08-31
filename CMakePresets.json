@@ -213,6 +213,13 @@
       "targets": [
         "format-check"
       ]
+    },
+    {
+      "name": "format",
+      "configurePreset": "gcc-debug",
+      "targets": [
+        "format"
+      ]
     }
   ],
   "testPresets": [
