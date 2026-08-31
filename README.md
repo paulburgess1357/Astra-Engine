@@ -68,7 +68,7 @@ src/
   gpu/        astra_gpu       Vulkan: device, swapchain, memory, pipelines, commands
   renderer/   astra_renderer  frame loop, passes, what actually gets drawn
   main.cpp    astra_engine    executable wiring the above together
-tests/        astra_tests     GoogleTest, links every library
+tests/<lib>/  astra_<lib>_tests  GoogleTest, one executable per library
 ```
 
 Dependencies flow downward only: `engine -> renderer -> gpu -> core`,
