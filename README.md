@@ -1,120 +1,96 @@
 # Astra Engine
 
-A cross-platform Vulkan Renderer
+A cross-platform Vulkan renderer in C++23.
 
-## Bootstrap dependencies
+## Quick start
 
-Prerequisites are Git, CMake 3.25+, a compiler with C++23 support, and the
-platform build tools: Ninja on Linux/macOS (`apt install ninja-build` or
-`brew install ninja`) or Visual Studio 2022 or newer on Windows. On Linux and macOS,
-bootstrap the pinned vcpkg checkout with:
+Prerequisites: Git, CMake 3.25+, a C++23 compiler, and Ninja (Linux/macOS) or
+Visual Studio 2022+ (Windows; VS 2026 needs CMake 4.2+).
 
 ```sh
-./scripts/bootstrap.sh
-```
-
-On Windows, run:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\bootstrap.ps1
-```
-
-The scripts keep vcpkg, downloaded sources, and its binary cache under the
-Git-ignored `.deps/` directory. They do not install anything globally or modify
-the shell environment. Running a configure preset then installs the manifest
-dependencies for that platform automatically.
-
-## Build locally
-
-The default preset is a GCC Debug build for Linux:
-
-```sh
-cmake --preset default
+./scripts/bootstrap.sh          # Windows: powershell -ExecutionPolicy Bypass -File .\scripts\bootstrap.ps1
+cmake --preset default          # macOS: clang-debug   Windows: msvc-debug
 cmake --build --preset build-default
 ctest --preset test-default
 ```
 
-On macOS, use the Apple Clang preset:
+Bootstrap clones a pinned vcpkg into the git-ignored `.deps/` directory. Nothing
+is installed globally; the first configure builds the manifest dependencies.
+
+## Presets
+
+Every preset `<name>` has matching `build-<name>` and `test-<name>` presets.
+
+| Preset            | Compiler    | Notes                          |
+| ----------------- | ----------- | ------------------------------ |
+| `default`         | GCC         | Alias for `gcc-debug`          |
+| `gcc-debug`       | GCC         |                                |
+| `gcc-release`     | GCC         |                                |
+| `clang-debug`     | Clang       | Use on macOS                   |
+| `clang-release`   | Clang       |                                |
+| `clang-tidy`      | Clang       | Static analysis (`.clang-tidy`) |
+| `gcc-asan-ubsan`  | GCC         | Address + UB sanitizers        |
+| `gcc-tsan`        | GCC         | Thread sanitizer               |
+| `clang-asan-ubsan`| Clang       | Address + UB sanitizers        |
+| `clang-tsan`      | Clang       | Thread sanitizer               |
+| `msvc-debug`      | MSVC        |                                |
+| `msvc-release`    | MSVC        |                                |
+| `msvc-asan`       | MSVC        | Address sanitizer only         |
+
+ASan and TSan cannot be combined, hence separate presets. Warnings are errors
+on every preset.
+
+Formatting is enforced in CI:
 
 ```sh
-cmake --preset clang-debug
-cmake --build --preset build-clang-debug
-ctest --preset test-clang-debug
+cmake --build --preset format        # apply
+cmake --build --preset format-check  # verify
 ```
 
-On Windows, use the MSVC preset. CMake picks the newest Visual Studio
-installed; building with Visual Studio 2026 requires CMake 4.2+ (older CMake
-does not know that generator).
+CI runs the full matrix on Ubuntu, macOS, and Windows plus the format check.
 
-```powershell
-cmake --preset msvc-debug
-cmake --build --preset build-msvc-debug
-ctest --preset test-msvc-debug
-```
+### Shell shortcuts (optional)
 
-`default` means GCC Debug: fast compilation, debug information, and assertions
-enabled. Build an optimized release locally with:
+`scripts/aliases.sh` defines `astra_build`, `astra_test`, `astra_run`,
+`astra_fmt`, and `cda` for the default preset; they work from any directory.
+Add to your `~/.bashrc` or `~/.zshrc`:
 
 ```sh
-cmake --preset gcc-release
-cmake --build --preset build-gcc-release
-ctest --preset test-gcc-release
+source /path/to/Astra-Engine/scripts/aliases.sh
 ```
 
-Run the required formatting check with:
+## Layout
 
-```sh
-cmake --build --preset format-check
+```
+src/
+  core/       astra_core      logging setup, shared utilities (no engine deps)
+  platform/   astra_platform  GLFW window, input, surface creation
+  gpu/        astra_gpu       Vulkan: device, swapchain, memory, pipelines, commands
+  renderer/   astra_renderer  frame loop, passes, what actually gets drawn
+  main.cpp    astra_engine    executable wiring the above together
+tests/        astra_tests     GoogleTest, links every library
 ```
 
-The `clang-*`, `clang-tidy`, and `msvc-*` presets provide equivalent Clang,
-static-analysis, and Visual Studio builds. The CI pipeline checks formatting,
-runs clang-tidy, and builds/tests Debug and Release with GCC/Clang on Linux,
-Apple Clang on macOS, and MSVC on Windows.
+Dependencies flow downward only: `engine -> renderer -> gpu -> core`,
+`platform -> core`. Headers are included relative to `src/`
+(`#include "gpu/context.hpp"`); namespaces mirror directories (`astra::gpu`).
 
-## Runtime sanitizers
-
-Sanitizer builds instrument the executable and report bugs while tests run. Use
-AddressSanitizer and UndefinedBehaviorSanitizer together for memory and
-undefined-behavior errors:
-
-```sh
-cmake --preset gcc-asan-ubsan
-cmake --build --preset build-gcc-asan-ubsan
-ctest --preset test-gcc-asan-ubsan
-```
-
-Use the corresponding `clang-asan-ubsan` preset with Clang or Apple Clang.
-ThreadSanitizer is a separate build because it cannot be combined with
-AddressSanitizer:
-
-```sh
-cmake --preset gcc-tsan
-cmake --build --preset build-gcc-tsan
-ctest --preset test-gcc-tsan
-```
-
-GCC, Clang, and Apple Clang support all three sanitizers. MSVC supports
-AddressSanitizer only; use `msvc-asan`, `build-msvc-asan`, and `test-msvc-asan`.
+Log with `SPDLOG_INFO`/`SPDLOG_WARN`/etc. on the default logger. Macros below
+`SPDLOG_ACTIVE_LEVEL` (trace in Debug, info otherwise) compile out.
 
 ## Style
 
-- Types, classes, and enums: `PascalCase`
-- Functions, methods, and variables: `camelCase`
-- Constants: `kPascalCase`
-- Files: `snake_case`
-- Namespaces: `lowercase`
-
-Formatting is required and defined by `.clang-format`. `.clangd` configures
-editor diagnostics; `.clang-tidy` is an opt-in static-analysis preset. clangd
-reads `build/compile_commands.json`, a symlink that always points at the most
-recently configured preset's compilation database.
+`PascalCase` types · `camelCase` functions/variables · `kPascalCase` constants ·
+`snake_case` files · `lowercase` namespaces. Formatting is defined by
+`.clang-format`. clangd reads `build/compile_commands.json`, a symlink to the
+most recently configured preset's database.
 
 ## Dependencies
 
-This repository uses vcpkg manifest mode with a pinned registry baseline:
+vcpkg manifest mode (`vcpkg.json`), pinned to a baseline commit:
 
-- GLFW for windows, input, and Vulkan surface creation
-- spdlog for logging
-- Vulkan loader and headers, including Vulkan-Hpp and its `vk::raii` API
-- Vulkan Memory Allocator (VMA) for GPU memory management
+- **GLFW** — windows, input, Vulkan surface creation
+- **spdlog** — logging
+- **Vulkan** loader + headers, including Vulkan-Hpp / `vk::raii`
+- **Vulkan Memory Allocator** — GPU memory management
+- **GoogleTest** — tests

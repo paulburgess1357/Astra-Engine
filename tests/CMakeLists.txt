@@ -1,0 +1,11 @@
+astra_add_executable(astra_tests
+    SOURCES
+        core_test.cpp
+        gpu_test.cpp
+    DEPS
+        astra::astra_core
+        astra::astra_platform
+        astra::astra_gpu
+        astra::astra_renderer
+        GTest::gtest_main)
+gtest_discover_tests(astra_tests)

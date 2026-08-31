@@ -20,6 +20,7 @@ include(CTest)
 include(GoogleTest)
 include(cmake/Sanitizers.cmake)
 include(cmake/Warnings.cmake)
+include(cmake/AstraTargets.cmake)
 
 if(ASTRA_ENABLE_CLANG_TIDY)
     find_program(ASTRA_CLANG_TIDY_EXECUTABLE NAMES clang-tidy REQUIRED)
@@ -33,23 +34,16 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(GTest CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 
-add_executable(astra_engine src/main.cpp)
-target_compile_features(astra_engine PRIVATE cxx_std_23)
-target_link_libraries(astra_engine PRIVATE
-    Vulkan::Vulkan
-    GPUOpen::VulkanMemoryAllocator
-    glfw
-    spdlog::spdlog)
-astra_enable_sanitizers(astra_engine)
-astra_enable_warnings(astra_engine)
+# Log macros below this level compile out entirely.
+add_compile_definitions(
+    # GLFW must not pull in OpenGL headers; we use Vulkan only.
+    GLFW_INCLUDE_NONE
+    $<IF:$<CONFIG:Debug>,SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE,SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_INFO>)
+
+add_subdirectory(src)
 
 if(BUILD_TESTING)
-    add_executable(astra_tests tests/smoke_test.cpp)
-    target_include_directories(astra_tests PRIVATE src)
-    target_link_libraries(astra_tests PRIVATE GTest::gtest_main)
-    astra_enable_sanitizers(astra_tests)
-    astra_enable_warnings(astra_tests)
-    gtest_discover_tests(astra_tests)
+    add_subdirectory(tests)
 endif()
 
 find_program(ASTRA_CLANG_FORMAT_EXECUTABLE NAMES clang-format)

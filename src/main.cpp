@@ -1,8 +1,18 @@
 #include <spdlog/spdlog.h>
 
-#include "application.hpp"
+#include "core/log.hpp"
+#include "core/version.hpp"
+#include "platform/platform.hpp"
+#include "renderer/renderer.hpp"
 
 auto main() -> int {
-  spdlog::info(astra::kGreeting);
+  astra::core::initLogging();
+  SPDLOG_INFO("{} starting", astra::core::kEngineName);
+
+  if (!astra::platform::initialize()) {
+    return 1;
+  }
+  astra::renderer::renderFrame();
+  astra::platform::shutdown();
   return 0;
 }
