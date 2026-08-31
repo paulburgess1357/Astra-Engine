@@ -3,6 +3,6 @@
 namespace astra::renderer {
 
 // Placeholder frame entry point.
-void renderFrame();
+auto renderFrame() -> void;
 
 }  // namespace astra::renderer

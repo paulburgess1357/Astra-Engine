@@ -5,7 +5,7 @@
 
 namespace astra::platform {
 
-bool initialize() {
+auto initialize() -> bool {
   if (glfwInit() != GLFW_TRUE) {
     SPDLOG_ERROR("glfwInit failed");
     return false;
@@ -13,7 +13,7 @@ bool initialize() {
   return true;
 }
 
-void shutdown() {
+auto shutdown() -> void {
   glfwTerminate();
 }
 

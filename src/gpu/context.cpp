@@ -1,11 +1,12 @@
 #include "gpu/context.hpp"
 
+#include <cstdint>
 #include <vulkan/vulkan.hpp>
 
 namespace astra::gpu {
 
-std::uint32_t headerVersion() {
-  return VK_HEADER_VERSION_COMPLETE;
+auto headerVersion() -> std::uint32_t {
+  return vk::HeaderVersionComplete;
 }
 
 }  // namespace astra::gpu

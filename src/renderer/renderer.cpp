@@ -4,7 +4,7 @@
 
 namespace astra::renderer {
 
-void renderFrame() {
+auto renderFrame() -> void {
   SPDLOG_TRACE("renderFrame");
 }
 
