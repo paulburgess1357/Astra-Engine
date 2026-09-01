@@ -19,7 +19,7 @@ namespace astra::gpu {
 
 namespace {
 
-constexpr std::uint32_t kApiVersion = vk::ApiVersion13;
+constexpr auto kApiVersion = vk::ApiVersion13;
 constexpr const char* kValidationLayer = "VK_LAYER_KHRONOS_validation";
 
 VKAPI_ATTR auto VKAPI_CALL onDebugMessage(
@@ -30,7 +30,7 @@ VKAPI_ATTR auto VKAPI_CALL onDebugMessage(
 ) -> vk::Bool32 {
   using Severity = vk::DebugUtilsMessageSeverityFlagBitsEXT;
 
-  const char* message = (data != nullptr && data->pMessage != nullptr) ? data->pMessage : "(no message)";
+  const auto* message = (data != nullptr && data->pMessage != nullptr) ? data->pMessage : "(no message)";
   switch (severity) {
     case Severity::eError:
       ASTRA_ERROR("[vulkan] {}", message);
@@ -59,20 +59,16 @@ auto makeMessengerInfo() -> vk::DebugUtilsMessengerCreateInfoEXT {
 }
 
 auto hasLayer(std::span<const vk::LayerProperties> available, std::string_view name) -> bool {
-  return std::ranges::any_of(available, [name](const vk::LayerProperties& layer) -> bool {
-    return std::string_view{layer.layerName.data()} == name;
-  });
+  return std::ranges::any_of(available, [name](const auto& layer) -> bool { return std::string_view{layer.layerName.data()} == name; });
 }
 
 auto hasExtension(std::span<const vk::ExtensionProperties> available, std::string_view name) -> bool {
-  return std::ranges::any_of(available, [name](const vk::ExtensionProperties& ext) -> bool {
-    return std::string_view{ext.extensionName.data()} == name;
-  });
+  return std::ranges::any_of(available, [name](const auto& ext) -> bool { return std::string_view{ext.extensionName.data()} == name; });
 }
 
 auto joinNames(std::span<const char* const> names) -> std::string {
   std::string joined;
-  for (const char* name : names) {
+  for (const auto* name : names) {
     joined += joined.empty() ? "" : ", ";
     joined += name;
   }
@@ -92,7 +88,7 @@ struct InstanceSetup {
 };
 
 auto requireLoaderVersion(const vk::raii::Context& context) -> std::uint32_t {
-  const std::uint32_t loaderVersion = context.enumerateInstanceVersion();
+  const auto loaderVersion = context.enumerateInstanceVersion();
   if (loaderVersion < kApiVersion) {
     throw core::Error("Vulkan loader supports {} but {} is required", versionString(loaderVersion), versionString(kApiVersion));
   }
@@ -112,8 +108,8 @@ auto validationAvailable(std::span<const vk::LayerProperties> layers, std::span<
 }
 
 auto resolveSetup(const vk::raii::Context& context, const InstanceConfig& config) -> InstanceSetup {
-  const std::vector<vk::LayerProperties> availableLayers = context.enumerateInstanceLayerProperties();
-  const std::vector<vk::ExtensionProperties> availableExtensions = context.enumerateInstanceExtensionProperties();
+  const auto availableLayers = context.enumerateInstanceLayerProperties();
+  const auto availableExtensions = context.enumerateInstanceExtensionProperties();
 
   InstanceSetup setup;
   setup.extensions.assign(config.requiredExtensions.begin(), config.requiredExtensions.end());
@@ -130,7 +126,7 @@ auto resolveSetup(const vk::raii::Context& context, const InstanceConfig& config
     setup.flags |= vk::InstanceCreateFlagBits::eEnumeratePortabilityKHR;
   }
 
-  for (const char* extension : setup.extensions) {
+  for (const auto* extension : setup.extensions) {
     if (!hasExtension(availableExtensions, extension)) {
       throw core::Error("Required Vulkan instance extension {} is not available", extension);
     }
@@ -139,21 +135,21 @@ auto resolveSetup(const vk::raii::Context& context, const InstanceConfig& config
 }
 
 auto createInstance(const vk::raii::Context& context, const InstanceConfig& config, const InstanceSetup& setup) -> vk::raii::Instance {
-  const vk::ApplicationInfo appInfo = vk::ApplicationInfo{}
-                                          .setPApplicationName(config.appName.c_str())
-                                          .setApplicationVersion(vk::makeApiVersion(0U, 0U, 1U, 0U))
-                                          .setPEngineName("Astra")
-                                          .setEngineVersion(vk::makeApiVersion(0U, 0U, 1U, 0U))
-                                          .setApiVersion(kApiVersion);
+  const auto appInfo = vk::ApplicationInfo{}
+                           .setPApplicationName(config.appName.c_str())
+                           .setApplicationVersion(vk::makeApiVersion(0U, 0U, 1U, 0U))
+                           .setPEngineName("Astra")
+                           .setEngineVersion(vk::makeApiVersion(0U, 0U, 1U, 0U))
+                           .setApiVersion(kApiVersion);
 
   // Chaining the messenger info covers vkCreateInstance/vkDestroyInstance themselves.
-  const vk::DebugUtilsMessengerCreateInfoEXT messengerInfo = makeMessengerInfo();
-  const vk::InstanceCreateInfo createInfo = vk::InstanceCreateInfo{}
-                                                .setPNext(setup.validation ? &messengerInfo : nullptr)
-                                                .setFlags(setup.flags)
-                                                .setPApplicationInfo(&appInfo)
-                                                .setPEnabledLayerNames(setup.layers)
-                                                .setPEnabledExtensionNames(setup.extensions);
+  const auto messengerInfo = makeMessengerInfo();
+  const auto createInfo = vk::InstanceCreateInfo{}
+                              .setPNext(setup.validation ? &messengerInfo : nullptr)
+                              .setFlags(setup.flags)
+                              .setPApplicationInfo(&appInfo)
+                              .setPEnabledLayerNames(setup.layers)
+                              .setPEnabledExtensionNames(setup.extensions);
 
   return vk::raii::Instance{context, createInfo};
 }
@@ -162,8 +158,8 @@ auto createInstance(const vk::raii::Context& context, const InstanceConfig& conf
 
 Instance::Instance(const InstanceConfig& config)
     : mInstance{nullptr} {
-  const std::uint32_t loaderVersion = requireLoaderVersion(mContext);
-  const InstanceSetup setup = resolveSetup(mContext, config);
+  const auto loaderVersion = requireLoaderVersion(mContext);
+  const auto setup = resolveSetup(mContext, config);
 
   mInstance = createInstance(mContext, config, setup);
   if (setup.validation) {

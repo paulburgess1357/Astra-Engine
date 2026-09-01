@@ -13,7 +13,7 @@ namespace astra::platform {
 
 namespace {
 
-void onGlfwError(int code, const char* description) {
+auto onGlfwError(int code, const char* description) -> void {
   ASTRA_ERROR("GLFW error {:#x}: {}", code, description);
 }
 
@@ -48,7 +48,7 @@ auto Platform::pollEvents() -> void {
 
 auto Platform::requiredVulkanExtensions() -> std::vector<const char*> {
   std::uint32_t count = 0;
-  const char** names = glfwGetRequiredInstanceExtensions(&count);
+  auto* names = glfwGetRequiredInstanceExtensions(&count);
   if (names == nullptr) {
     throw core::Error("Platform does not support Vulkan surface creation");
   }
