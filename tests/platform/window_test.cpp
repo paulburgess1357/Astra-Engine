@@ -45,9 +45,9 @@ TEST_F(WindowTest, CloseRequestIsObservable) {
 
 TEST_F(WindowTest, MoveTransfersOwnership) {
   Window original({});
-  const GLFWwindow* const handle = original.handle();
+  const auto* const handle = original.handle();
 
-  const Window moved = std::move(original);
+  const auto moved = std::move(original);
   EXPECT_EQ(moved.handle(), handle);
 }
 
