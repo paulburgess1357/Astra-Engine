@@ -70,6 +70,15 @@ auto hasExtension(std::span<const vk::ExtensionProperties> available, std::strin
   });
 }
 
+auto joinNames(std::span<const char* const> names) -> std::string {
+  std::string joined;
+  for (const char* name : names) {
+    joined += joined.empty() ? "" : ", ";
+    joined += name;
+  }
+  return joined;
+}
+
 auto versionString(std::uint32_t version) -> std::string {
   return std::format("{}.{}.{}", vk::apiVersionMajor(version), vk::apiVersionMinor(version), vk::apiVersionPatch(version));
 }
@@ -162,15 +171,12 @@ Instance::Instance(const InstanceConfig& config)
   }
 
   ASTRA_INFO(
-      "Vulkan instance created (API {}, loader {}, {} extension(s), validation {})",
+      "Vulkan instance created (API {}, loader {}, validation {}, extensions: {})",
       versionString(kApiVersion),
       versionString(loaderVersion),
-      setup.extensions.size(),
-      setup.validation ? "on" : "off"
+      setup.validation ? "on" : "off",
+      joinNames(setup.extensions)
   );
-  for (const char* extension : setup.extensions) {
-    ASTRA_DEBUG("  instance extension: {}", extension);
-  }
 }
 
 }  // namespace astra::gpu
