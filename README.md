@@ -12,7 +12,10 @@ Visual Studio 2022+ (Windows; VS 2026 needs CMake 4.2+).
 cmake --preset default          # macOS: clang-debug   Windows: msvc-debug
 cmake --build --preset build-default
 ctest --preset test-default
+./build/gcc-debug/bin/astra_engine   # Windows: .\build\msvc-debug\bin\astra_engine.exe
 ```
+
+Executables land in `build/<preset>/bin/` on every platform.
 
 Bootstrap clones a pinned vcpkg into the git-ignored `.deps/` directory. Nothing
 is installed globally; the first configure builds the manifest dependencies.
@@ -80,8 +83,8 @@ Log with `SPDLOG_INFO`/`SPDLOG_WARN`/etc. on the default logger. Macros below
 
 ## Style
 
-`PascalCase` types · `camelCase` functions/variables · `kPascalCase` constants ·
-`snake_case` files · `lowercase` namespaces. Formatting is defined by
+`PascalCase` types · `camelCase` functions/variables · `mPascalCase` data members ·
+`kPascalCase` constants · `snake_case` files · `lowercase` namespaces. Formatting is defined by
 `.clang-format`. clangd reads `build/compile_commands.json`, a symlink to the
 most recently configured preset's database.
 

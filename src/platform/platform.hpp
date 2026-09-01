@@ -2,8 +2,27 @@
 
 namespace astra::platform {
 
-// Initializes the windowing/input backend (GLFW). Returns false on failure.
-[[nodiscard]] auto initialize() -> bool;
-auto shutdown() -> void;
+enum class Backend {
+  Native,    // OS windowing system
+  Headless,  // GLFW null platform, for tests/CI
+};
+
+// RAII wrapper around glfw
+class Platform {
+ public:
+  explicit Platform(Backend backend = Backend::Native);
+  ~Platform();
+
+  Platform(const Platform&) = delete;
+  Platform(Platform&&) = delete;
+  auto operator=(const Platform&) -> Platform& = delete;
+  auto operator=(Platform&&) -> Platform& = delete;
+
+  // Call once per frame.
+  static auto pollEvents() -> void;
+
+ private:
+  static bool mAlive;
+};
 
 }  // namespace astra::platform

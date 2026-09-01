@@ -1,11 +1,7 @@
 #include "renderer/renderer.hpp"
 
-#include <spdlog/spdlog.h>
-
 namespace astra::renderer {
 
-auto renderFrame() -> void {
-  SPDLOG_TRACE("renderFrame");
-}
+auto renderFrame() -> void {}
 
 }  // namespace astra::renderer

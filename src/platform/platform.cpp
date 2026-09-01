@@ -1,20 +1,45 @@
 #include "platform/platform.hpp"
 
 #include <GLFW/glfw3.h>
-#include <spdlog/spdlog.h>
+
+#include "core/error.hpp"
+#include "core/log.hpp"
 
 namespace astra::platform {
 
-auto initialize() -> bool {
-  if (glfwInit() != GLFW_TRUE) {
-    SPDLOG_ERROR("glfwInit failed");
-    return false;
-  }
-  return true;
+namespace {
+
+void onGlfwError(int code, const char* description) {
+  ASTRA_ERROR("GLFW error {:#x}: {}", code, description);
 }
 
-auto shutdown() -> void {
+}  // namespace
+
+bool Platform::mAlive = false;
+
+Platform::Platform(Backend backend) {
+  if (mAlive) {
+    throw core::Error("Only one platform::Platform may exist at a time");
+  }
+
+  glfwSetErrorCallback(onGlfwError);
+  if (backend == Backend::Headless) {
+    glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_NULL);
+  }
+  if (glfwInit() != GLFW_TRUE) {
+    throw core::Error("glfwInit failed");
+  }
+  mAlive = true;
+  ASTRA_INFO("GLFW {} initialized ({})", glfwGetVersionString(), backend == Backend::Headless ? "headless" : "native");
+}
+
+Platform::~Platform() {
   glfwTerminate();
+  mAlive = false;
+}
+
+auto Platform::pollEvents() -> void {
+  glfwPollEvents();
 }
 
 }  // namespace astra::platform

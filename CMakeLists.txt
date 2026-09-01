@@ -9,6 +9,11 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Put every executable in build/<preset>/bin/. The generator expression stops
+# multi-config generators (Visual Studio) from appending a Debug/Release
+# subdirectory; each preset already has its own binary dir per configuration.
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<0:>")
+
 if(CMAKE_EXPORT_COMPILE_COMMANDS AND UNIX)
     set(ASTRA_COMPILE_COMMANDS_LINK "${CMAKE_SOURCE_DIR}/build/compile_commands.json")
     file(REMOVE "${ASTRA_COMPILE_COMMANDS_LINK}")

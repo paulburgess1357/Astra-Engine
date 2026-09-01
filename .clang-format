@@ -1,8 +1,12 @@
 ---
 BasedOnStyle: Google
 IndentWidth: 2
-ColumnLimit: 100
+ColumnLimit: 140
 PointerAlignment: Left
 AllowShortFunctionsOnASingleLine: Empty
 SortIncludes: CaseSensitive
+PackConstructorInitializers: Never
+BinPackParameters: false
+BinPackArguments: false
+AlignAfterOpenBracket: BlockIndent
 ...
