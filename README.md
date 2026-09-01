@@ -4,96 +4,75 @@ A cross-platform Vulkan renderer in C++23.
 
 ## Quick start
 
-Prerequisites: Git, CMake 3.25+, a C++23 compiler, and Ninja (Linux/macOS) or
-Visual Studio 2022+ (Windows; VS 2026 needs CMake 4.2+).
+Prerequisites: Git, CMake 3.25+, a C++23 compiler, Ninja (Linux/macOS) or
+Visual Studio 2022+ (Windows).
 
 ```sh
-./scripts/bootstrap.sh          # Windows: powershell -ExecutionPolicy Bypass -File .\scripts\bootstrap.ps1
-cmake --preset default          # macOS: clang-debug   Windows: msvc-debug
+./scripts/bootstrap.sh                # once; Windows: .\scripts\bootstrap.ps1
+cmake --preset default                # macOS: clang-debug   Windows: msvc-debug
 cmake --build --preset build-default
 ctest --preset test-default
-./build/gcc-debug/bin/astra_engine   # Windows: .\build\msvc-debug\bin\astra_engine.exe
+./build/gcc-debug/bin/astra_engine
 ```
 
-Executables land in `build/<preset>/bin/` on every platform.
-
-Bootstrap clones a pinned vcpkg into the git-ignored `.deps/` directory. Nothing
-is installed globally; the first configure builds the manifest dependencies.
+Bootstrap clones a pinned vcpkg into `.deps/`; nothing is installed globally.
 
 ## Presets
 
-Every preset `<name>` has matching `build-<name>` and `test-<name>` presets.
-
-| Preset            | Compiler    | Notes                          |
-| ----------------- | ----------- | ------------------------------ |
-| `default`         | GCC         | Alias for `gcc-debug`          |
-| `gcc-debug`       | GCC         |                                |
-| `gcc-release`     | GCC         |                                |
-| `clang-debug`     | Clang       | Use on macOS                   |
-| `clang-release`   | Clang       |                                |
-| `clang-tidy`      | Clang       | Static analysis (`.clang-tidy`) |
-| `gcc-asan-ubsan`  | GCC         | Address + UB sanitizers        |
-| `gcc-tsan`        | GCC         | Thread sanitizer               |
-| `clang-asan-ubsan`| Clang       | Address + UB sanitizers        |
-| `clang-tsan`      | Clang       | Thread sanitizer               |
-| `msvc-debug`      | MSVC        |                                |
-| `msvc-release`    | MSVC        |                                |
-| `msvc-asan`       | MSVC        | Address sanitizer only         |
-
-ASan and TSan cannot be combined, hence separate presets. Warnings are errors
-on every preset.
-
-Formatting is enforced in CI:
+`<compiler>-<debug|release>` plus sanitizer and clang-tidy variants:
 
 ```sh
-cmake --build --preset format        # apply
-cmake --build --preset format-check  # verify
+cmake --list-presets
+cmake --preset clang-release
+cmake --build --preset build-clang-release
+ctest --preset test-clang-release
 ```
 
-CI runs the full matrix on Ubuntu, macOS, and Windows plus the format check.
-
-### Shell shortcuts (optional)
-
-`scripts/aliases.sh` defines `astra_build`, `astra_test`, `astra_run`,
-`astra_fmt`, and `cda` for the default preset; they work from any directory.
-Add to your `~/.bashrc` or `~/.zshrc`:
+## Formatting
 
 ```sh
-source /path/to/Astra-Engine/scripts/aliases.sh
+cmake --build --preset format
 ```
+
+CI enforces it. `source scripts/aliases.sh` adds `astra_build`, `astra_test`,
+`astra_run`, `astra_fmt`, `cda`.
+
+## Validation layers
+
+Enabled automatically in Debug when installed:
+
+```sh
+sudo apt install vulkan-validationlayers   # Linux
+```
+
+macOS/Windows: install the [LunarG Vulkan SDK](https://vulkan.lunarg.com/).
 
 ## Layout
 
 ```
 src/
-  core/       astra_core      logging setup, shared utilities (no engine deps)
-  platform/   astra_platform  GLFW window, input, surface creation
-  gpu/        astra_gpu       Vulkan: device, swapchain, memory, pipelines, commands
-  renderer/   astra_renderer  frame loop, passes, what actually gets drawn
-  main.cpp    astra_engine    executable wiring the above together
-tests/<lib>/  astra_<lib>_tests  GoogleTest, one executable per library
+  core/        astra_core         Logging, shared utilities
+  platform/    astra_platform     GLFW window, input, surface
+  gpu/         astra_gpu          Vulkan: instance, device, swapchain, ...
+  renderer/    astra_renderer     Frame loop, passes
+  main.cpp     astra_engine       Executable
+tests/
+  <lib>/       astra_<lib>_tests  GoogleTest, one exe per library
 ```
 
-Dependencies flow downward only: `engine -> renderer -> gpu -> core`,
-`platform -> core`. Headers are included relative to `src/`
-(`#include "gpu/context.hpp"`); namespaces mirror directories (`astra::gpu`).
+Dependencies flow downward:
 
-Log with `SPDLOG_INFO`/`SPDLOG_WARN`/etc. on the default logger. Macros below
-`SPDLOG_ACTIVE_LEVEL` (trace in Debug, info otherwise) compile out.
+- `engine -> renderer -> gpu -> core`
+- `platform -> core`.
 
-## Style
+Includes are relative to `src/`; namespaces mirror directories.
 
-`PascalCase` types · `camelCase` functions/variables · `mPascalCase` data members ·
-`kPascalCase` constants · `snake_case` files · `lowercase` namespaces. Formatting is defined by
-`.clang-format`. clangd reads `build/compile_commands.json`, a symlink to the
-most recently configured preset's database.
+Style: `PascalCase` types, `camelCase` functions, `mPascalCase` members,
+`kPascalCase` constants, `snake_case` files.
 
 ## Dependencies
 
-vcpkg manifest mode (`vcpkg.json`), pinned to a baseline commit:
+vcpkg manifest (`vcpkg.json`): GLFW, spdlog, Vulkan loader + headers
+(Vulkan-Hpp / `vk::raii`), Vulkan Memory Allocator, GoogleTest.
 
-- **GLFW** — windows, input, Vulkan surface creation
-- **spdlog** — logging
-- **Vulkan** loader + headers, including Vulkan-Hpp / `vk::raii`
-- **Vulkan Memory Allocator** — GPU memory management
-- **GoogleTest** — tests
+Optional: Vulkan validation layers (see above).

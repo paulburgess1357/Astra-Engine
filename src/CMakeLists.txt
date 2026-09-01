@@ -5,4 +5,4 @@ add_subdirectory(renderer)
 
 astra_add_executable(astra_engine
     SOURCES main.cpp
-    DEPS astra::astra_core astra::astra_platform astra::astra_renderer)
+    DEPS astra::astra_core astra::astra_platform astra::astra_gpu astra::astra_renderer)
