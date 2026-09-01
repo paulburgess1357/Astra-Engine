@@ -5,7 +5,8 @@ A cross-platform Vulkan renderer in C++23.
 ## Quick start
 
 Prerequisites: Git, CMake 3.25+, a C++23 compiler, Ninja (Linux/macOS) or
-Visual Studio 2022+ (Windows).
+Visual Studio 2022+ (Windows). macOS also needs MoltenVK: install the
+[LunarG Vulkan SDK](https://vulkan.lunarg.com/) or `brew install molten-vk`.
 
 ```sh
 ./scripts/bootstrap.sh                # once; Windows: .\scripts\bootstrap.ps1
