@@ -6,6 +6,6 @@ ASTRA_ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-${(%):-%x}}")/.." && pwd)"
 
 astra_build() { (cd "$ASTRA_ROOT" && cmake --build --preset build-default "$@"); }
 astra_test()  { (cd "$ASTRA_ROOT" && ctest --preset test-default "$@"); }
-astra_run()   { (cd "$ASTRA_ROOT" && cmake --build --preset build-default >/dev/null && ./build/gcc-debug/src/astra_engine "$@"); }
+astra_run()   { (cd "$ASTRA_ROOT" && cmake --build --preset build-default >/dev/null && ./build/gcc-debug/bin/astra_engine "$@"); }
 astra_fmt()   { (cd "$ASTRA_ROOT" && cmake --build --preset format); }
 cda()         { cd "$ASTRA_ROOT"; }

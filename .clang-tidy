@@ -8,6 +8,7 @@ Checks: >
   misc-*,
   modernize-*,
   performance-*,
+  -performance-enum-size,
   portability-*,
   readability-*
 WarningsAsErrors: "*"
