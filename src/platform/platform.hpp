@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 namespace astra::platform {
 
 enum class Backend {
@@ -20,6 +22,10 @@ class Platform {
 
   // Call once per frame.
   static auto pollEvents() -> void;
+
+  // Vulkan instance extensions needed to create surfaces on this platform.
+  // Throws if the platform has no Vulkan support (e.g. Headless).
+  [[nodiscard]] static auto requiredVulkanExtensions() -> std::vector<const char*>;
 
  private:
   static bool mAlive;

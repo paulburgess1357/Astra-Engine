@@ -6,7 +6,7 @@
 namespace astra::core {
 
 auto initLogging() -> void {
-  spdlog::set_pattern("[%H:%M:%S.%e] [%^%l%$] [%t] %v");
+  spdlog::set_pattern("[%H:%M:%S.%e] [%^%-8l%$] [id %t] %v");
   spdlog::set_level(static_cast<spdlog::level::level_enum>(SPDLOG_ACTIVE_LEVEL));
 }
 

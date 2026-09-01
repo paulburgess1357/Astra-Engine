@@ -7,6 +7,14 @@
     "glfw3",
     "spdlog",
     "vulkan",
+    {
+      "name": "vulkan-loader",
+      "features": [
+        "xcb",
+        "xlib"
+      ],
+      "platform": "linux"
+    },
     "vulkan-memory-allocator"
   ]
 }

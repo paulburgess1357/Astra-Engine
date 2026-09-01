@@ -2,6 +2,10 @@
 
 #include <GLFW/glfw3.h>
 
+#include <cstdint>
+#include <span>
+#include <vector>
+
 #include "core/error.hpp"
 #include "core/log.hpp"
 
@@ -40,6 +44,16 @@ Platform::~Platform() {
 
 auto Platform::pollEvents() -> void {
   glfwPollEvents();
+}
+
+auto Platform::requiredVulkanExtensions() -> std::vector<const char*> {
+  std::uint32_t count = 0;
+  const char** names = glfwGetRequiredInstanceExtensions(&count);
+  if (names == nullptr) {
+    throw core::Error("Platform does not support Vulkan surface creation");
+  }
+  const std::span<const char*> span{names, count};
+  return {span.begin(), span.end()};
 }
 
 }  // namespace astra::platform

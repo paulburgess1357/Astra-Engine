@@ -1,6 +1,7 @@
 #include <exception>
 
 #include "core/log.hpp"
+#include "gpu/instance.hpp"
 #include "platform/platform.hpp"
 #include "platform/window.hpp"
 #include "renderer/renderer.hpp"
@@ -10,6 +11,9 @@ namespace {
 auto run() -> void {
   const astra::platform::Platform platform;
   const astra::platform::Window window({});
+
+  const auto extensions = astra::platform::Platform::requiredVulkanExtensions();
+  const astra::gpu::Instance instance({.requiredExtensions = extensions});
 
   while (!window.shouldClose()) {
     astra::platform::Platform::pollEvents();
