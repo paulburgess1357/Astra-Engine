@@ -19,10 +19,10 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
-      - name: Verify clang-format is available
-        run: clang-format-18 --version
+      - name: Install clang-format
+        run: pipx install clang-format==21.1.8
       - name: Check formatting
-        run: clang-format-18 --dry-run --Werror --style=file $(git ls-files '*.cpp' '*.hpp' '*.h')
+        run: clang-format --version && clang-format --dry-run --Werror --style=file $(git ls-files '*.cpp' '*.hpp' '*.h')
 
   build-and-test:
     name: ${{ matrix.name }}

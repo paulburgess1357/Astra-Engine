@@ -17,8 +17,6 @@ TEST(Platform, SecondInstanceThrows) {
 }
 
 TEST(Platform, CanBeRecreatedAfterDestruction) {
-  {
-    const Platform platform{Backend::Headless};
-  }
+  EXPECT_NO_THROW(Platform{Backend::Headless});
   EXPECT_NO_THROW(Platform{Backend::Headless});
 }
