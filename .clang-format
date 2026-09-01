@@ -5,4 +5,8 @@ ColumnLimit: 140
 PointerAlignment: Left
 AllowShortFunctionsOnASingleLine: Empty
 SortIncludes: CaseSensitive
+PackConstructorInitializers: Never
+BinPackParameters: false
+BinPackArguments: false
+AlignAfterOpenBracket: BlockIndent
 ...
