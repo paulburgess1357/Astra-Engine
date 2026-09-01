@@ -1,16 +1,16 @@
 #include "platform/platform.hpp"
 
 #include <GLFW/glfw3.h>
-#include <spdlog/spdlog.h>
 
 #include "core/error.hpp"
+#include "core/log.hpp"
 
 namespace astra::platform {
 
 namespace {
 
 void onGlfwError(int code, const char* description) {
-  SPDLOG_ERROR("GLFW error {:#x}: {}", code, description);
+  ASTRA_ERROR("GLFW error {:#x}: {}", code, description);
 }
 
 }  // namespace

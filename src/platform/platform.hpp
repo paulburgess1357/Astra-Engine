@@ -7,7 +7,7 @@ enum class Backend {
   Headless,  // GLFW null platform, for tests/CI
 };
 
-// RAII wrapper around glfwInit/glfwTerminate. One instance, outlives all Windows.
+// RAII wrapper around glfw
 class Platform {
  public:
   explicit Platform(Backend backend = Backend::Native);

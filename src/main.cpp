@@ -1,5 +1,3 @@
-#include <spdlog/spdlog.h>
-
 #include <exception>
 
 #include "core/log.hpp"
@@ -23,12 +21,12 @@ auto run() -> void {
 
 auto main() -> int {
   astra::core::initLogging();
-  SPDLOG_INFO("Astra Engine starting");
+  ASTRA_INFO("Astra Engine starting");
 
   try {
     run();
   } catch (const std::exception& e) {
-    SPDLOG_CRITICAL("{}", e.what());
+    ASTRA_CRITICAL("{}", e.what());
     return 1;
   }
   return 0;
