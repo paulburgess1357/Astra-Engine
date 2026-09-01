@@ -30,6 +30,7 @@ Platform::Platform(Backend backend) {
     throw core::Error("glfwInit failed");
   }
   mAlive = true;
+  ASTRA_INFO("GLFW {} initialized ({})", glfwGetVersionString(), backend == Backend::Headless ? "headless" : "native");
 }
 
 Platform::~Platform() {

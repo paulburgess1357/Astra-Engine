@@ -5,6 +5,7 @@
 #include <cstdint>
 
 #include "core/error.hpp"
+#include "core/log.hpp"
 
 namespace astra::platform {
 
@@ -20,6 +21,7 @@ Window::Window(const WindowConfig& config) {
   if (!mWindow) {
     throw core::Error("Failed to create window \"{}\" ({}x{})", config.title, config.width, config.height);
   }
+  ASTRA_INFO("Created window \"{}\" ({}x{})", config.title, config.width, config.height);
 }
 
 auto Window::shouldClose() const -> bool {
