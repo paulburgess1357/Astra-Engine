@@ -14,8 +14,8 @@ namespace {
 
 auto toGlfwKey(Key key) -> int {
   switch (key) {
-    case Key::Escape:
-      return GLFW_KEY_ESCAPE;
+    case Key::Escape: return GLFW_KEY_ESCAPE;
+    case Key::Q: return GLFW_KEY_Q;
   }
   std::unreachable();
 }

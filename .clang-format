@@ -4,6 +4,7 @@ IndentWidth: 2
 ColumnLimit: 140
 PointerAlignment: Left
 AllowShortFunctionsOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: true
 SortIncludes: CaseSensitive
 PackConstructorInitializers: Never
 BinPackParameters: false

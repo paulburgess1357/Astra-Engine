@@ -25,6 +25,7 @@ struct WindowConfig {
 
 enum class Key {
   Escape,
+  Q,
 };
 
 // One on-screen window to draw into (RAII wrapper around a GLFWwindow, no client API).
