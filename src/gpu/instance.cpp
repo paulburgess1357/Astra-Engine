@@ -32,18 +32,10 @@ VKAPI_ATTR auto VKAPI_CALL onDebugMessage(
 
   const auto* message = (data != nullptr && data->pMessage != nullptr) ? data->pMessage : "(no message)";
   switch (severity) {
-    case Severity::eError:
-      ASTRA_ERROR("[vulkan] {}", message);
-      break;
-    case Severity::eWarning:
-      ASTRA_WARN("[vulkan] {}", message);
-      break;
+    case Severity::eError: ASTRA_ERROR("[vulkan] {}", message); break;
+    case Severity::eWarning: ASTRA_WARN("[vulkan] {}", message); break;
     case Severity::eInfo:
-      ASTRA_DEBUG("[vulkan] {}", message);
-      break;
-    case Severity::eVerbose:
-      ASTRA_TRACE("[vulkan] {}", message);
-      break;
+    case Severity::eVerbose: ASTRA_TRACE("[vulkan] {}", message); break;
   }
   return vk::False;
 }
