@@ -39,8 +39,6 @@ VKAPI_ATTR auto VKAPI_CALL onDebugMessage(
       ASTRA_WARN("[vulkan] {}", message);
       break;
     case Severity::eInfo:
-      ASTRA_DEBUG("[vulkan] {}", message);
-      break;
     case Severity::eVerbose:
       ASTRA_TRACE("[vulkan] {}", message);
       break;

@@ -10,13 +10,16 @@ namespace {
 
 auto run() -> void {
   const astra::platform::Platform platform;
-  const astra::platform::Window window({});
+  astra::platform::Window window({});
 
   const auto extensions = astra::platform::Platform::requiredVulkanExtensions();
   const astra::gpu::Instance instance({.requiredExtensions = extensions});
 
   while (!window.shouldClose()) {
     astra::platform::Platform::pollEvents();
+    if (window.isKeyDown(astra::platform::Key::Escape)) {
+      window.requestClose();
+    }
     astra::renderer::renderFrame();
   }
 }

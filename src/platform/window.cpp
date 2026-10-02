@@ -3,11 +3,24 @@
 #include <GLFW/glfw3.h>
 
 #include <cstdint>
+#include <utility>
 
 #include "core/error.hpp"
 #include "core/log.hpp"
 
 namespace astra::platform {
+
+namespace {
+
+auto toGlfwKey(Key key) -> int {
+  switch (key) {
+    case Key::Escape:
+      return GLFW_KEY_ESCAPE;
+  }
+  std::unreachable();
+}
+
+}  // namespace
 
 auto Window::Deleter::operator()(GLFWwindow* window) const -> void {
   glfwDestroyWindow(window);
@@ -30,6 +43,10 @@ auto Window::shouldClose() const -> bool {
 
 auto Window::requestClose() -> void {
   glfwSetWindowShouldClose(mWindow.get(), GLFW_TRUE);
+}
+
+auto Window::isKeyDown(Key key) const -> bool {
+  return glfwGetKey(mWindow.get(), toGlfwKey(key)) == GLFW_PRESS;
 }
 
 auto Window::framebufferSize() const -> Extent2D {

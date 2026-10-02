@@ -23,13 +23,21 @@ struct WindowConfig {
   bool resizable{true};
 };
 
-// RAII wrapper around a GLFWwindow (no client API, for Vulkan). Needs a live Platform.
+enum class Key {
+  Escape,
+};
+
+// One on-screen window to draw into (RAII wrapper around a GLFWwindow, no client API).
+// Needs a live Platform, which must outlive it.
 class Window {
  public:
   explicit Window(const WindowConfig& config);
 
   [[nodiscard]] auto shouldClose() const -> bool;
   auto requestClose() -> void;
+
+  // True while the key is held; reflects the last pollEvents().
+  [[nodiscard]] auto isKeyDown(Key key) const -> bool;
 
   // Drawable size in pixels; zero while minimized.
   [[nodiscard]] auto framebufferSize() const -> Extent2D;

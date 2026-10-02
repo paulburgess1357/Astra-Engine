@@ -9,7 +9,10 @@ enum class Backend {
   Headless,  // GLFW null platform, for tests/CI
 };
 
-// RAII wrapper around glfw
+// Connection to the OS windowing system (RAII wrapper around GLFW).
+// Does not own windows, but must outlive every Window.
+// Only one Platform may exist at a time; it supports any number of windows.
+
 class Platform {
  public:
   explicit Platform(Backend backend = Backend::Native);
